@@ -1,7 +1,10 @@
 package ecust.Hsing.mydb.backend.tm;
 
+import ecust.Hsing.mydb.backend.utils.Panic;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.locks.Lock;
 
@@ -28,5 +31,26 @@ public class TransactionManagerImpl {
             Panic.panic(Error.BadXIDFileException);
         }
 
+        if(fileLen < LEN_XID_HEADER_LENGTH) {
+            Panic.panic(Error.BadXIDFileException);
+        }
+
+        ByteBuffer buf = ByteBuffer.allocate(LEN_XID_HEADER_LENGTH);
+
+        try {
+            fc.position(0);
+            fc.read(buf);
+        } catch (IOException e) {
+            Panic.panic(e);
+        }
+
+
+
+
+
+
+    }
+    private long getXidPosition(long xid){
+        return LEN_XID_HEADER_LENGTH + (xid - 1) * XID_FIELD_SIZE;
     }
 }
